@@ -11,26 +11,18 @@ class ConsoleApp:
     def run(self) -> None:
         while True:
             print("\n=== ПРОВЕРКА И ПОИСК IPv4 ===")
-            print("1. Проверить один IP-адрес")
-            print("2. Найти IP-адреса в тексте")
-            print("3. Показать историю")
-            print("4. Удалить запись из истории")
-            print("5. Очистить историю")
+            print("1. Найти и проверить IP-адрес")
+            print("2. Выбрать IP-адрес из истории")
+            print("3. Очистить историю")
             print("0. Выход")
             choice = input("Выберите действие: ").strip()
             try:
                 if choice == "1":
-                    self._cmd_check()
+                    self.search_and_check()
                 elif choice == "2":
                     self._cmd_search()
                 elif choice == "3":
                     self._cmd_show_history()
-                elif choice == "4":
-                    self.service.delete_record(int(input("ID записи: ")))
-                    print("Запись удалена")
-                elif choice == "5":
-                    self.service.clear_history()
-                    print("История очищена")
                 elif choice == "0":
                     print("До свидания!")
                     return
@@ -42,22 +34,18 @@ class ConsoleApp:
                 print("\nВыход")
                 return
 
-    def _cmd_check(self) -> None:
-        ip = self.service.check_ip(input("IP-адрес: "))
-        if ip is None:
-            print("Некорректный IPv4-адрес")
-        else:
-            print(f"OK: {ip.value}  ({self._describe(ip)})")
-
-    def _cmd_search(self) -> None:
+    def search_and_check(self) -> None:
         text = input("Текст: ")
-        ips = self.service.search_ips(text)
+        ips = self.service.search_and_check_ips(text)
         if not ips:
             print("Корректных IPv4-адресов не найдено")
             return
-        print(f"Найдено: {len(ips)}")
+        
         for ip in ips:
-            print(f"  • {ip.value}  ({self._describe(ip)})")
+            if ip is not None:
+                print(f"OK: {ip.value}  ({self._describe(ip)})")
+            else:
+                print(f"Not OK: {ip.value}  ({self._describe(ip)})")
 
     def _cmd_show_history(self) -> None:
         records = self.service.list_history()
