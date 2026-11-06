@@ -12,7 +12,7 @@ class ConsoleApp:
         while True:
             print("\n=== ПРОВЕРКА И ПОИСК IPv4 ===")
             print("1. Найти и проверить IP-адрес")
-            print("2. Выбрать IP-адрес из истории")
+            print("2. Посмотреть историю запросов")
             print("3. Очистить историю")
             print("0. Выход")
             choice = input("Выберите действие: ").strip()
@@ -53,20 +53,9 @@ class ConsoleApp:
         if not ips:
             print("История пуста")
             return
-
-        try:
-            id = int(input("Введите id: "))
-            if id > ips[-1].id or id < 1:
-                raise ValueError("Введённый id не соответствует истории")
-
-        except ValueError as error:
-            print(f"Ошибка {error}")
-            return
-            
-
+        
         for ip in ips:
-            if ip.id == id:
-                if ip.valid:
-                    print(f"✓: {ip.ip}  ({ip.describe})")
-                else:
-                    print(f"✗: {ip.ip}  ({ip.describe})")
+            mark = "✓" if ip.valid else "✗"
+            print(f"{ip.id}. [{mark}] {ip.ip} ({ip.describe})")
+
+        input("Нажмите Enter для выхода в меню...")
