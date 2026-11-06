@@ -20,6 +20,7 @@ class JsonCheckRepository(CheckRepository):
             CheckIP(
                 id=item["id"],
                 ip=str(item["ip"]),
+                describe=str(item["describe"]),
                 valid=bool(item["valid"]),
             )
             for item in data
@@ -32,6 +33,7 @@ class JsonCheckRepository(CheckRepository):
             dict(
                 id=i.id,
                 ip=i.ip,
+                describe=i.describe,
                 valid=i.valid,
             )
             for i in ips

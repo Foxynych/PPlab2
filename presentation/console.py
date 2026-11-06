@@ -16,11 +16,12 @@ class ConsoleApp:
             print("3. Очистить историю")
             print("0. Выход")
             choice = input("Выберите действие: ").strip()
+
             try:
                 if choice == "1":
                     self.search_and_check()
                 elif choice == "2":
-                    self._cmd_search()
+                    self.pick_and_check_ip_form_history()
                 elif choice == "3":
                     self._cmd_show_history()
                 elif choice == "0":
@@ -43,27 +44,29 @@ class ConsoleApp:
         
         for ip in ips:
             if ip is not None:
-                print(f"OK: {ip.value}  ({self._describe(ip)})")
+                print(f"✓: {ip.value}  ({self.service._describe(ip)})")
             else:
-                print(f"Not OK: {ip.value}  ({self._describe(ip)})")
+                print(f"✗: {ip.value}  ({self.service._describe(ip)})")
 
-    def _cmd_show_history(self) -> None:
-        records = self.service.list_history()
-        if not records:
+    def pick_and_check_ip_form_history(self) -> None:
+        ips = self.service.list_history()
+        if not ips:
             print("История пуста")
             return
-        for r in records:
-            mark = "✓" if r.valid else "✗"
-            found = ", ".join(r.found) if r.found else "—"
-            print(f"{r.id}. [{mark}] {r.kind:6} | {r.query!r} → {found}")
 
-    @staticmethod
-    def _describe(ip: IPv4) -> str:
-        flags = [f"class {ip.ip_class}"]
-        if ip.is_private:
-            flags.append("private")
-        if ip.is_loopback:
-            flags.append("loopback")
-        if ip.is_multicast:
-            flags.append("multicast")
-        return ", ".join(flags)
+        try:
+            id = int(input("Введите id: "))
+            if id > ips[-1].id or id < 1:
+                raise ValueError("Введённый id не соответствует истории")
+
+        except ValueError as error:
+            print(f"Ошибка {error}")
+            return
+            
+
+        for ip in ips:
+            if ip.id == id:
+                if ip.valid:
+                    print(f"✓: {ip.ip}  ({ip.describe})")
+                else:
+                    print(f"✗: {ip.ip}  ({ip.describe})")

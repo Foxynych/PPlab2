@@ -46,6 +46,7 @@ class IPCheckerService:
                 CheckIP(
                     id=self._next_id(),
                     ip=ip.value,
+                    describe=self._describe(ip),
                     valid=ip is not None,
                 )
             )
@@ -70,5 +71,18 @@ class IPCheckerService:
         self.repository.save_all(ips)
 
     def _next_id(self) -> int:
-        records = self.repository.get_all()
-        return max((r.id for r in records), default=0) + 1
+        ips = self.repository.get_all()
+        return max((i.id for i in ips), default=0) + 1
+
+    @staticmethod
+    def _describe(ip: IPv4) -> str:
+        flags = [f"class {ip.ip_class}"]
+
+        if ip.is_private:
+            flags.append("private")
+        if ip.is_loopback:
+            flags.append("loopback")
+        if ip.is_multicast:
+            flags.append("multicast")
+
+        return ", ".join(flags)

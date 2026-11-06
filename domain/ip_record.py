@@ -5,4 +5,5 @@ from dataclasses import dataclass
 class CheckIP:
     id: int
     ip: str
+    describe: str
     valid: bool
