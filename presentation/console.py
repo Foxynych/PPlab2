@@ -23,7 +23,11 @@ class ConsoleApp:
                 elif choice == "2":
                     self.pick_and_check_ip_form_history()
                 elif choice == "3":
-                    self._cmd_show_history()
+                    answer = input("Вы уверены, что хотите очистить историю? (y/n) ")
+
+                    if answer == 'y':
+                        self.service.clear_history()
+                        print("История очищена")
                 elif choice == "0":
                     print("До свидания!")
                     return
@@ -44,9 +48,9 @@ class ConsoleApp:
         
         for ip in ips:
             if ip is not None:
-                print(f"✓: {ip.value}  ({self.service._describe(ip)})")
+                print(f"[✓] {ip.value}  ({self.service._describe(ip)})")
             else:
-                print(f"✗: {ip.value}  ({self.service._describe(ip)})")
+                print(f"[✗] {ip.value}  ({self.service._describe(ip)})")
 
     def pick_and_check_ip_form_history(self) -> None:
         ips = self.service.list_history()
