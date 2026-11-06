@@ -9,8 +9,7 @@ class IPv4:
 
     @classmethod
     def from_string(cls, value: str) -> "IPv4":
-        # Вызывается только после IPV4_FULL.match(value) — ведущих нулей нет.
-        return cls(tuple(int(part) for part in value.split(".")))  # type: ignore[arg-type]
+        return cls(tuple(int(part) for part in value.split(".")))
 
     @property
     def value(self) -> str:
@@ -19,6 +18,7 @@ class IPv4:
     @property
     def ip_class(self) -> str:
         a = self.octets[0]
+
         if a == 0:
             return "0 (reserved)"
         if 1 <= a <= 126:

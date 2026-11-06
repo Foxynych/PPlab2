@@ -53,17 +53,8 @@ class IPCheckerService:
 
         return found
 
-    def delete_record(self, record_id: int) -> None:
-        records = self.repository.get_all()
-        remaining = [r for r in records if r.id != record_id]
-        if len(remaining) == len(records):
-            raise ValueError(f"Запись с ID {record_id} не найдена")
-        self.repository.save_all(remaining)
-
     def clear_history(self) -> None:
         self.repository.save_all([])
-
-    # --- внутренние помощники ------------------------------------------
 
     def _append(self, ip: CheckIP) -> None:
         ips = self.repository.get_all()
